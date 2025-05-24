@@ -342,14 +342,17 @@
         .chart-container {
             margin: 35px auto;
             background: rgba(255, 255, 255, 0.05);
-            padding: 25px; /* Adjusted */
+            padding: 25px; 
             border-radius: 20px;
             max-width: 700px;
             width: 100%;
+            min-height: 300px; /* Give it a minimum height */
         }
 
         #results-chart {
-            max-height: 380px; /* Adjusted */
+            /* max-height: 380px; Removed to allow more flexibility */
+             width: 100% !important; /* Ensure chart takes full width of its container */
+             height: auto !important; /* Chart.js will calculate height */
         }
 
         .trait-result {
@@ -434,7 +437,23 @@
             .final-actions { flex-direction: column; }
             .trait-name { font-size: 1.3rem; }
             .trait-score { font-size: 1.15rem; }
+            
+            .chart-container {
+                padding: 15px; /* Reduced padding for chart on mobile */
+            }
         }
+        @media (max-width: 480px) { /* Even smaller screens */
+            .title { font-size: 2rem; }
+            .question-text { font-size: 1.2rem; }
+            .trait-name { font-size: 1.15rem; }
+            .trait-name .trait-icon-result { font-size: 1.4rem; margin-right: 8px;}
+            .trait-score { font-size: 1.05rem; padding: 4px 8px;}
+            .description, .subtitle, .option-text, .trait-description { font-size: 0.9rem;}
+             .chart-container {
+                min-height: 250px; /* Further adjust min-height if needed */
+            }
+        }
+
 
         .floating-shapes {
             position: fixed;
@@ -636,11 +655,11 @@
         };
         
         const chartTraitColors = { // Adjusted for new theme, #e94560 for Extraversion
-            O: 'rgba(255, 159, 64, 0.6)', // Orange
-            C: 'rgba(54, 162, 235, 0.6)', // Blue
-            E: 'rgba(233, 69, 96, 0.6)',   // #e94560 (Primary Accent Red)
-            A: 'rgba(75, 192, 192, 0.6)', // Teal/Green
-            N: 'rgba(153, 102, 255, 0.6)' // Purple
+            O: 'rgba(255, 159, 64, 0.7)', // Orange (increased alpha for visibility)
+            C: 'rgba(54, 162, 235, 0.7)', // Blue
+            E: 'rgba(233, 69, 96, 0.7)',   // #e94560 (Primary Accent Red)
+            A: 'rgba(75, 192, 192, 0.7)', // Teal/Green
+            N: 'rgba(153, 102, 255, 0.7)' // Purple
         };
         const chartTraitBorderColors = {
             O: 'rgba(255, 159, 64, 1)', C: 'rgba(54, 162, 235, 1)',
@@ -649,11 +668,10 @@
         };
 
 
-        // DOM Elements
+        // DOM Elements (remains the same)
         const welcomeScreen = document.getElementById('welcome-screen');
         const questionScreen = document.getElementById('question-screen');
         const resultsScreen = document.getElementById('results-screen');
-
         const welcomeSubtitle = document.getElementById('welcome-subtitle');
         const welcomeDescription = document.getElementById('welcome-description');
         const traitOpenness = document.getElementById('trait-openness');
@@ -662,7 +680,6 @@
         const traitAgreeableness = document.getElementById('trait-agreeableness');
         const traitNeuroticism = document.getElementById('trait-neuroticism');
         const startBtn = document.getElementById('start-btn');
-
         const progressText = document.getElementById('progress-text');
         const progressFill = document.getElementById('progress-fill');
         const questionTextWrapper = document.getElementById('question-text-wrapper');
@@ -672,12 +689,10 @@
         const nextBtn = document.getElementById('next-btn');
         const backText = document.getElementById('back-text');
         const nextText = document.getElementById('next-text');
-        
         const resultsTitle = document.getElementById('results-title');
         const resultsDateEl = document.getElementById('results-date');
         const traitDescriptionsContainer = document.getElementById('trait-descriptions-container');
         const restartBtn = document.getElementById('restart-btn');
-        // Save button related elements removed from here if any were specific
 
 
         function setLanguage(lang) {
@@ -700,7 +715,7 @@
             resultsTitle.textContent = t.resultsTitle;
             restartBtn.textContent = t.restartBtn;
 
-            if (questionScreen.offsetParent !== null) loadQuestion(currentQuestion); // Check visibility
+            if (questionScreen.offsetParent !== null) loadQuestion(currentQuestion); 
             if (resultsScreen.offsetParent !== null) displayResults();
         }
 
@@ -723,11 +738,9 @@
             const t = translations[currentLanguage];
             const q_data = questions_data[index];
             
-            // Fade out current question content
             questionTextWrapper.style.opacity = 0;
             optionsContainer.style.opacity = 0;
 
-            // Delay for fade out, then update and fade in
             setTimeout(() => {
                 questionTextEl.textContent = t.questions[q_data.key];
                 
@@ -768,11 +781,10 @@
                 nextBtn.disabled = answers[index] === null;
                 nextText.textContent = (index === totalQuestions - 1) ? t.finishText : t.nextText;
 
-                // Fade in new content
                 questionTextWrapper.style.opacity = 1;
                 optionsContainer.style.opacity = 1;
 
-            }, 150); // Adjust delay for smooth fade effect
+            }, 150); 
         }
 
 
@@ -787,10 +799,7 @@
             }
             nextBtn.disabled = false;
             
-            // Auto-next if not the last question and it's a click (not programmatic)
-            if (event && currentQuestion < totalQuestions - 1) {
-                 setTimeout(() => nextQuestion(), 250); // Small delay before auto-next
-            }
+            // Auto-next REMOVED from here
         }
 
         function nextQuestion() {
@@ -803,7 +812,6 @@
                 calculateResults();
                 displayResults();
             }
-             // scrollToTop(); // Only scroll to top for screen changes, not question changes
         }
 
         function previousQuestion() {
@@ -811,7 +819,6 @@
                 currentQuestion--;
                 loadQuestion(currentQuestion);
             }
-            // scrollToTop();
         }
 
         function calculateResults() {
@@ -865,7 +872,7 @@
                 scoreEl.classList.add('trait-score');
                 scoreEl.textContent = score.toFixed(2);
                 scoreEl.style.color = chartTraitBorderColors[traitKey];
-                scoreEl.style.background = chartTraitColors[traitKey].replace('0.6', '0.2'); // Lighter background for score badge
+                scoreEl.style.background = chartTraitColors[traitKey].replace('0.7', '0.25'); // Slightly more visible bg
 
                 header.appendChild(nameEl);
                 header.appendChild(scoreEl);
@@ -887,6 +894,22 @@
             const chartBackgroundColors = sortedTraits.map(traitKey => chartTraitColors[traitKey]);
             const chartBorderColors = sortedTraits.map(traitKey => chartTraitBorderColors[traitKey]);
 
+            let barThickness = 30;
+            let tickFontSize = 12;
+            let yTickFontSize = 13;
+
+            if (window.innerWidth < 768) {
+                barThickness = 25;
+                tickFontSize = 10;
+                yTickFontSize = 11;
+            }
+             if (window.innerWidth < 480) {
+                barThickness = 20;
+                tickFontSize = 9;
+                yTickFontSize = 10;
+            }
+
+
             myResultsChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -895,30 +918,30 @@
                         data: chartDataValues,
                         backgroundColor: chartBackgroundColors,
                         borderColor: chartBorderColors,
-                        borderWidth: 2,
-                        borderRadius: 8, // Rounded bars
-                        barThickness: 30, // Adjust bar thickness
+                        borderWidth: 1.5, // Slightly thinner border
+                        borderRadius: 6, 
+                        barThickness: barThickness, 
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Allow chart to fill container better
+                    maintainAspectRatio: false, 
                     indexAxis: 'y',
                      scales: {
                         x: { 
                             beginAtZero: true, max: 5,
-                            ticks: { color: 'rgba(224, 224, 224, 0.8)', font: { size: 12, weight: '500'} },
-                            grid: { color: 'rgba(255,255,255,0.08)' } // More subtle grid
+                            ticks: { color: 'rgba(224, 224, 224, 0.8)', font: { size: tickFontSize, weight: '500'} },
+                            grid: { color: 'rgba(255,255,255,0.08)' } 
                         },
                         y: { 
-                            ticks: { color: 'rgba(224, 224, 224, 0.9)', font: { size: 13, weight: '600'} },
+                            ticks: { color: 'rgba(224, 224, 224, 0.9)', font: { size: yTickFontSize, weight: '600'} },
                             grid: { display: false }
                         }
                     },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: 'rgba(26, 26, 46, 0.85)', // Dark tooltip
+                            backgroundColor: 'rgba(26, 26, 46, 0.85)', 
                             titleFont: { size: 14, weight: 'bold' },
                             bodyFont: { size: 13 },
                             borderColor: 'rgba(233, 69, 96, 0.7)',
@@ -945,12 +968,25 @@
             setLanguage(currentLanguage);
         }
 
-        // Save Results function removed
 
         document.addEventListener('DOMContentLoaded', () => {
             setLanguage(currentLanguage);
+             // Add resize listener for chart adjustments if necessary,
+            // though Chart.js responsive usually handles it.
+            // If more fine-grained control is needed on resize for font/bar thickness:
+            // window.addEventListener('resize', () => {
+            //     if (myResultsChart && resultsScreen.offsetParent !== null) {
+            //         // Potentially re-calculate barThickness/tickFontSize and update chart
+            //         // myResultsChart.options.datasets[0].barThickness = newBarThickness;
+            //         // myResultsChart.options.scales.x.ticks.font.size = newTickFontSize;
+            //         // myResultsChart.update();
+            //         // For simplicity, we rely on initial check and Chart.js responsiveness
+            //     }
+            // });
         });
 
     </script>
+</body>
+</html>
 </body>
 </html>
