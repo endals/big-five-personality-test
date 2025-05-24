@@ -293,7 +293,8 @@
             display: flex;
             justify-content: space-between;
             margin-top: 35px;
-            gap: 20px;
+            gap: 15px; /* Adjusted gap for potentially 3 buttons */
+            flex-wrap: wrap; /* Allow buttons to wrap on narrow screens if needed before column layout kicks in */
         }
 
         .nav-btn {
@@ -304,9 +305,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
             flex: 1;
-            max-width: 220px; /* Slightly wider */
+            min-width: 120px; /* Minimum width to prevent over-squishing */
+            /* max-width: 220px; /* Removed to allow flex to distribute more evenly for 3 buttons if needed */
             color: white;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            text-align: center;
         }
         
         .nav-btn .arrow {
@@ -432,8 +435,14 @@
             .option-text { font-size: 0.95rem; }
             .options-container { gap: 10px; }
             .option { padding: 16px; }
-            .navigation { flex-direction: column; }
-            .nav-btn { max-width: none; }
+            .navigation { 
+                flex-direction: column; 
+                gap: 15px; /* Consistent gap for column layout */
+            }
+            .nav-btn { 
+                max-width: none; 
+                /* flex: 1; will make them full width in column, this is fine */
+            }
             .final-actions { flex-direction: column; }
             .trait-name { font-size: 1.3rem; }
             .trait-score { font-size: 1.15rem; }
@@ -441,17 +450,86 @@
             .chart-container {
                 padding: 15px; /* Reduced padding for chart on mobile */
             }
+             .trait-result { 
+                padding: 20px; 
+            }
         }
         @media (max-width: 480px) { /* Even smaller screens */
-            .title { font-size: 2rem; }
-            .question-text { font-size: 1.2rem; }
-            .trait-name { font-size: 1.15rem; }
-            .trait-name .trait-icon-result { font-size: 1.4rem; margin-right: 8px;}
-            .trait-score { font-size: 1.05rem; padding: 4px 8px;}
-            .description, .subtitle, .option-text, .trait-description { font-size: 0.9rem;}
-             .chart-container {
-                min-height: 250px; /* Further adjust min-height if needed */
+            .container {
+                padding: 20px 10px; 
             }
+            .card {
+                padding: 20px 10px; 
+                border-radius: 15px; 
+            }
+            .title { font-size: 1.8rem; margin-bottom: 10px; }
+            .subtitle { font-size: 1rem; margin-bottom: 20px; }
+            .language-selector { margin-bottom: 25px;}
+            .language-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                margin: 3px;
+                border-radius: 15px;
+            }
+            .description { font-size: 0.85rem; margin-bottom: 25px; line-height: 1.6; }
+            
+            .trait-list { margin: 25px 0; }
+            .trait-item {
+                padding: 10px 12px;
+                border-radius: 10px;
+                margin: 8px 0;
+            }
+            .trait-item .trait-icon { font-size: 1.3rem; margin-right: 10px; }
+            .trait-item span:not(.trait-icon) { font-size: 0.9rem; }
+
+
+            .btn { 
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                border-radius: 30px;
+            }
+            
+            .progress-container { margin-bottom: 25px; }
+            .progress-text { font-size: 0.9rem; margin-bottom: 8px; }
+            .progress-bar { height: 8px; }
+
+            .question-card { margin: 20px 0;}
+            .question-text-wrapper { min-height: 50px; }
+            .question-text { font-size: 1.1rem; margin-bottom: 20px; }
+            
+            .options-container { gap: 8px; margin: 20px 0; }
+            .option { padding: 12px 14px; border-radius: 10px;}
+            .option-radio { margin-right: 10px; transform: scale(1.1); }
+            .option-text { font-size: 0.85rem; }
+
+            .navigation { margin-top: 25px; gap: 12px; }
+            .nav-btn {
+                padding: 10px 15px; 
+                font-size: 0.9rem;
+                border-radius: 20px;
+            }
+
+            .results-title { font-size: 1.8rem; margin-bottom: 10px;}
+            .results-date { font-size: 0.9rem; }
+            .chart-container {
+                padding: 10px;
+                min-height: 200px; /* Further adjust min-height */
+                margin: 25px auto;
+            }
+            .trait-result {
+                padding: 12px; 
+                border-radius: 12px;
+                margin: 15px 0;
+            }
+            .trait-header {
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+            .trait-name { font-size: 1.05rem; }
+            .trait-name .trait-icon-result { font-size: 1.2rem; margin-right: 8px;}
+            .trait-score { font-size: 0.95rem; padding: 3px 7px; }
+            .trait-description { font-size: 0.8rem; line-height: 1.55; }
+            .final-actions { margin-top: 25px; }
         }
 
 
@@ -573,6 +651,9 @@
             </div>
 
             <div class="navigation">
+                <button class="nav-btn btn-secondary" id="home-btn" onclick="goHome()">
+                     <span id="home-text">HOME</span>
+                </button>
                 <button class="nav-btn btn-secondary" id="back-btn" onclick="previousQuestion()" disabled>
                     <span class="arrow">←</span> <span id="back-text">BACK</span>
                 </button>
@@ -627,6 +708,7 @@
                 traitOpenness: "Openness to Experience", traitConscientiousness: "Conscientiousness", traitExtraversion: "Extraversion", traitAgreeableness: "Agreeableness", traitNeuroticism: "Emotional Stability",
                 startBtn: "START TEST", backText: "BACK", nextText: "NEXT", finishText: "FINISH", progressText: "Question {current} of {total}",
                 resultsTitle: "🎉 Your Personality Profile", resultsDate: "Test completed on {date}", restartBtn: "TAKE TEST AGAIN",
+                homeText: "HOME",
                 options: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
                 traitNames: { O: 'Openness', C: 'Conscientiousness', E: 'Extraversion', A: 'Agreeableness', N: 'Neuroticism' },
                 traitIcons: { O: '🎨', C: '📋', E: '🎉', A: '🤝', N: '😬' },
@@ -639,16 +721,19 @@
             },
             it: {
                 welcomeSubtitle: "TEST DELLA PERSONALITÀ", welcomeDescription: "Scopri la tua personalità attraverso il modello scientificamente validato dei Big Five. Questo test contiene 50 domande e richiede circa 10 minuti per essere completato.", traitOpenness: "Apertura Mentale", traitConscientiousness: "Coscienziosità", traitExtraversion: "Estroversione", traitAgreeableness: "Gradevolezza", traitNeuroticism: "Stabilità Emotiva", startBtn: "INIZIA TEST", backText: "INDIETRO", nextText: "AVANTI", finishText: "TERMINA", progressText: "Domanda {current} di {total}", resultsTitle: "🎉 Il Tuo Profilo di Personalità", resultsDate: "Test completato il {date}", restartBtn: "RIFAI IL TEST",
+                homeText: "HOME",
                 options: ["Fortemente in Disaccordo", "In Disaccordo", "Neutrale", "D'Accordo", "Fortemente d'Accordo"], traitNames: { O: 'Apertura Mentale', C: 'Coscienziosità', E: 'Estroversione', A: 'Gradevolezza', N: 'Nevroticismo' }, traitIcons: { O: '🎨', C: '📋', E: '🎉', A: '🤝', N: '😬' }, descriptions: { /* IT Descriptions */ O: { high: 'Sei una persona creativa, curiosa, fantasiosa e aperta alle novità. Ti piacciono le idee astratte, l\'arte, la cultura e l\'esplorazione intellettuale.', medium: 'Hai un buon equilibrio tra apertura e concretezza. Sei curioso, ma anche pratico.', low: 'Preferisci ciò che conosci e che ti è familiare. Sei pragmatico, realistico e tendi a essere diffidente verso l\'astratto o il nuovo.' }, C: { high: 'Sei organizzato, affidabile, preciso e disciplinato. Ti prendi le responsabilità sul serio, rispetti le scadenze e sei molto attento ai dettagli.', medium: 'Hai una certa organizzazione ma anche momenti di distrazione. Alterni periodi di grande produttività a momenti più caotici.', low: 'Tendi a essere disorganizzato, impulsivo o a rimandare i compiti. Fai fatica a seguire regole rigide o ad avere costanza.' }, E: { high: 'Sei energico, socievole, assertivo e ami stare in compagnia. Ti trovi a tuo agio con nuove persone, inizi conversazioni con facilità.', medium: 'Ti piace socializzare ma anche avere i tuoi momenti di tranquillità. Sai adattarti alle situazioni: a volte estroverso, a volte riservato.', low: 'Sei più introverso, riservato e tranquillo. Preferisci ascoltare piuttosto che parlare, e stare con poche persone fidate.' }, A: { high: 'Sei gentile, empatico, premuroso e disponibile. Ti piace aiutare gli altri, sei rispettoso e cerchi l\'armonia.', medium: 'Sei equilibrato: sai essere gentile, ma anche fermo quando serve. Cerchi di aiutare gli altri, ma non ti fai mettere i piedi in testa.', low: 'Tendi a essere diretto, critico o competitivo. Difficilmente ti lasci coinvolgere emotivamente, e potresti sembrare distante o freddo.' }, N: { high: 'Sei emotivamente sensibile, soggetto a stress e cambiamenti d\'umore. Tendi a preoccuparti facilmente, ma sei anche consapevole delle tue emozioni.', medium: 'Hai un buon equilibrio emotivo: sei empatico ma gestisci bene le emozioni. Hai momenti di stress, ma riesci a mantenere il controllo.', low: 'Sei calmo, stabile e resistente allo stress. Mantieni la calma anche in situazioni difficili.' } },
                 questions: { /* IT Questions */ O1: "Ho un ricco vocabolario.", O2: "Ho difficoltà a comprendere idee astratte.", O3: "Ho una vivida immaginazione.", O4: "Non mi interessano le idee astratte.", O5: "Ho idee eccellenti.", O6: "Non ho una buona immaginazione.", O7: "Capisco rapidamente le cose.", O8: "Uso parole difficili.", O9: "Passo tempo a riflettere sulle cose.", O10: "Sono pieno di idee.", C1: "Sono sempre preparato.", C2: "Lascio le mie cose in giro.", C3: "Presto attenzione ai dettagli.", C4: "Faccio un pasticcio.", C5: "Svolgo subito le faccende.", C6: "Dimentico spesso di rimettere le cose al loro posto.", C7: "Mi piace l'ordine.", C8: "Evito i miei doveri.", C9: "Seguo un programma.", C10: "Sono meticoloso nel mio lavoro.", E1: "Sono l'anima della festa.", E2: "Non parlo molto.", E3: "Mi sento a mio agio con le persone.", E4: "Resto in secondo piano.", E5: "Inizio le conversazioni.", E6: "Ho poco da dire.", E7: "Parlo con molte persone diverse alle feste.", E8: "Non mi piace attirare l'attenzione su di me.", E9: "Non mi dispiace essere al centro dell'attenzione.", E10: "Sono silenzioso con gli estranei.", A1: "Comprendo i sentimenti altrui.", A2: "Sento le emozioni altrui.", A3: "Metto le persone a proprio agio.", A4: "Non mi interesso molto agli altri.", A5: "Dedico tempo agli altri.", A6: "Sono gentile e premuroso.", A7: "Sono scortese con le persone.", A8: "Ho un cuore tenero.", A9: "Non mi interessano i problemi altrui.", A10: "Mi informo sul benessere altrui.", N1: "Mi stresso facilmente.", N2: "Mi preoccupo per le cose.", N3: "Mi turbo facilmente.", N4: "Mi arrabbio facilmente.", N5: "Cambio spesso umore.", N6: "Ho frequenti sbalzi d'umore.", N7: "Mi irrito facilmente.", N8: "Mi sento spesso triste.", N9: "Vado facilmente nel panico.", N10: "Sono rilassato per la maggior parte del tempo." }
             },
             fr: { /* FR Translations */
                 welcomeSubtitle: "TEST DE PERSONNALITÉ", welcomeDescription: "Découvrez votre personnalité grâce au modèle scientifiquement validé des Big Five. Ce test contient 50 questions et prend environ 10 minutes à compléter.", traitOpenness: "Ouverture d'Esprit", traitConscientiousness: "Conscienciosité", traitExtraversion: "Extraversion", traitAgreeableness: "Agréabilité", traitNeuroticism: "Stabilité Émotionnelle", startBtn: "COMMENCER LE TEST", backText: "RETOUR", nextText: "SUIVANT", finishText: "TERMINER", progressText: "Question {current} sur {total}", resultsTitle: "🎉 Votre Profil de Personnalité", resultsDate: "Test complété le {date}", restartBtn: "REFAIRE LE TEST",
+                homeText: "ACCUEIL",
                 options: ["Fortement en Désaccord", "En Désaccord", "Neutre", "D'Accord", "Fortement d'Accord"], traitNames: { O: 'Ouverture', C: 'Conscienciosité', E: 'Extraversion', A: 'Agréabilité', N: 'Névrosisme' }, traitIcons: { O: '🎨', C: '📋', E: '🎉', A: '🤝', N: '😬' }, descriptions: { O: { high: 'Vous êtes créatif, curieux, imaginatif et ouvert aux nouveautés. Vous aimez les idées abstraites, l\'art, la culture et l\'exploration intellectuelle.', medium: 'Vous avez un bon équilibre entre ouverture et praticité. Vous êtes curieux mais aussi pratique.', low: 'Vous préférez ce que vous connaissez et qui vous est familier. Vous êtes pragmatique, réaliste et méfiant envers l\'abstrait ou le nouveau.' }, C: { high: 'Vous êtes organisé, fiable, précis et discipliné. Vous prenez les responsabilités au sérieux et respectez les échéances.', medium: 'Vous avez une certaine organisation mais aussi des moments de distraction. Vous alternez entre productivité et chaos.', low: 'Vous tendez à être désorganisé, impulsif ou à procrastiner. Vous avez du mal à suivre des règles strictes.' }, E: { high: 'Vous êtes énergique, sociable, assertif et aimez être entouré. Vous vous sentez à l\'aise avec de nouvelles personnes.', medium: 'Vous aimez socialiser mais aussi avoir vos moments de tranquillité. Vous vous adaptez aux situations.', low: 'Vous êtes plus introverti, réservé et calme. Vous préférez écouter plutôt que parler.' }, A: { high: 'Vous êtes gentil, empathique, attentionné et serviable. Vous aimez aider les autres et cherchez l\'harmonie.', medium: 'Vous êtes équilibré : vous savez être gentil mais aussi ferme quand nécessaire.', low: 'Vous tendez à être direct, critique ou compétitif. Vous vous impliquez rarement émotionnellement.' }, N: { high: 'Vous êtes émotionnellement sensible, sujet au stress et aux changements d\'humeur. Vous vous inquiétez facilement.', medium: 'Vous avez un bon équilibre émotionnel : vous êtes empathique mais gérez bien les émotions.', low: 'Vous êtes calme, stable et résistant au stress. Vous restez calme même dans les situations difficiles.' } },
                 questions: { O1: "J'ai un vocabulaire riche.", O2: "J'ai des difficultés à comprendre les idées abstraites.", O3: "J'ai une imagination vive.", O4: "Je ne m'intéresse pas aux idées abstraites.", O5: "J'ai d'excellentes idées.", O6: "Je n'ai pas une bonne imagination.", O7: "Je comprends vite les choses.", O8: "J'utilise des mots difficiles.", O9: "Je passe du temps à réfléchir.", O10: "Je suis plein d'idées.", C1: "Je suis toujours préparé.", C2: "Je laisse traîner mes affaires.", C3: "Je fais attention aux détails.", C4: "Je mets le désordre.", C5: "Je fais les corvées immédiatement.", C6: "J'oublie souvent de remettre les choses à leur place.", C7: "J'aime l'ordre.", C8: "Je néglige mes devoirs.", C9: "Je suis un programme.", C10: "Je suis exigeant dans mon travail.", E1: "Je suis l'âme de la fête.", E2: "Je ne parle pas beaucoup.", E3: "Je me sens à l'aise avec les gens.", E4: "Je reste en arrière-plan.", E5: "J'entame les conversations.", E6: "J'ai peu à dire.", E7: "Je parle à beaucoup de gens différents aux fêtes.", E8: "Je n'aime pas attirer l'attention sur moi.", E9: "Ça ne me dérange pas d'être au centre de l'attention.", E10: "Je suis silencieux avec les inconnus.", A1: "Je compatis aux sentiments des autres.", A2: "Je ressens les émotions des autres.", A3: "Je mets les gens à l'aise.", A4: "Je ne m'intéresse pas vraiment aux autres.", A5: "Je prends du temps pour les autres.", A6: "Je suis gentil et attentionné.", A7: "Je suis impoli avec les gens.", A8: "J'ai un cœur tendre.", A9: "Je ne m'intéresse pas aux problèmes des autres.", A10: "Je m'informe du bien-être des autres.", N1: "Je stresse facilement.", N2: "Je m'inquiète pour des choses.", N3: "Je suis facilement perturbé.", N4: "Je m'énerve facilement.", N5: "Je change beaucoup d'humeur.", N6: "J'ai des sautes d'humeur fréquentes.", N7: "Je m'irrite facilement.", N8: "Je me sens souvent cafardeux.", N9: "Je panique facilement.", N10: "Je suis détendu la plupart du temps." }
             },
             de: { /* DE Translations */
                 welcomeSubtitle: "PERSÖNLICHKEITSTEST", welcomeDescription: "Entdecken Sie Ihre Persönlichkeit durch das wissenschaftlich validierte Big Five Modell. Dieser Test enthält 50 Fragen und dauert etwa 10 Minuten.", traitOpenness: "Offenheit für Erfahrungen", traitConscientiousness: "Gewissenhaftigkeit", traitExtraversion: "Extraversion", traitAgreeableness: "Verträglichkeit", traitNeuroticism: "Emotionale Stabilität", startBtn: "TEST STARTEN", backText: "ZURÜCK", nextText: "WEITER", finishText: "BEENDEN", progressText: "Frage {current} von {total}", resultsTitle: "🎉 Ihr Persönlichkeitsprofil", resultsDate: "Test abgeschlossen am {date}", restartBtn: "TEST WIEDERHOLEN",
+                homeText: "STARTSEITE",
                 options: ["Stimme überhaupt nicht zu", "Stimme nicht zu", "Neutral", "Stimme zu", "Stimme voll zu"], traitNames: { O: 'Offenheit', C: 'Gewissenhaftigkeit', E: 'Extraversion', A: 'Verträglichkeit', N: 'Neurotizismus' }, traitIcons: { O: '🎨', C: '📋', E: '🎉', A: '🤝', N: '😬' }, descriptions: { O: { high: 'Sie sind kreativ, neugierig, fantasievoll und offen für Neues. Sie mögen abstrakte Ideen, Kunst, Kultur und intellektuelle Erkundungen.', medium: 'Sie haben eine gute Balance zwischen Offenheit und Praktikabilität. Sie sind neugierig, aber auch praktisch.', low: 'Sie bevorzugen das Bekannte und Vertraute. Sie sind pragmatisch, realistisch und misstrauisch gegenüber Abstraktem oder Neuem.' }, C: { high: 'Sie sind organisiert, zuverlässig, präzise und diszipliniert. Sie nehmen Verantwortung ernst, halten Termine ein und achten sehr auf Details.', medium: 'Sie haben eine gewisse Organisation, aber auch Momente der Ablenkung. Sie wechseln zwischen Phasen hoher Produktivität und chaotischeren Momenten.', low: 'Sie neigen dazu, unorganisiert, impulsiv zu sein oder Aufgaben aufzuschieben. Es fällt Ihnen schwer, starre Regeln zu befolgen oder konsequent zu sein.' }, E: { high: 'Sie sind energisch, gesellig, durchsetzungsfähig und lieben es, unter Menschen zu sein. Sie fühlen sich bei neuen Leuten wohl und beginnen leicht Gespräche.', medium: 'Sie knüpfen gerne Kontakte, brauchen aber auch Ihre ruhigen Momente. Sie passen sich Situationen an: mal extrovertiert, mal zurückhaltend.', low: 'Sie sind eher introvertiert, zurückhaltend und ruhig. Sie hören lieber zu als zu reden und sind lieber mit wenigen Vertrauten zusammen.' }, A: { high: 'Sie sind freundlich, einfühlsam, fürsorglich und hilfsbereit. Sie helfen gerne anderen, sind respektvoll und suchen Harmonie.', medium: 'Sie sind ausgeglichen: Sie können freundlich sein, aber auch bestimmt, wenn es nötig ist. Sie versuchen, anderen zu helfen, lassen sich aber nicht ausnutzen.', low: 'Sie neigen dazu, direkt, kritisch oder wettbewerbsorientiert zu sein. Sie lassen sich selten emotional einbeziehen und wirken möglicherweise distanziert oder kalt.' }, N: { high: 'Sie sind emotional sensibel, stressanfällig und stimmungsschwankend. Sie neigen dazu, sich leicht Sorgen zu machen, sind sich aber auch Ihrer Emotionen bewusst.', medium: 'Sie haben eine gute emotionale Balance: Sie sind einfühlsam, gehen aber gut mit Emotionen um. Sie haben Stressmomente, behalten aber die Kontrolle.', low: 'Sie sind ruhig, stabil und stressresistent. Sie bleiben auch in schwierigen Situationen ruhig.' } },
                 questions: { O1: "Ich habe einen reichen Wortschatz.", O2: "Es fällt mir schwer, abstrakte Ideen zu verstehen.", O3: "Ich habe eine lebhafte Vorstellungskraft.", O4: "Ich interessiere mich nicht für abstrakte Ideen.", O5: "Ich habe ausgezeichnete Ideen.", O6: "Ich habe keine gute Vorstellungskraft.", O7: "Ich verstehe Dinge schnell.", O8: "Ich benutze schwierige Wörter.", O9: "Ich verbringe Zeit damit, über Dinge nachzudenken.", O10: "Ich bin voller Ideen.", C1: "Ich bin immer vorbereitet.", C2: "Ich lasse meine Sachen herumliegen.", C3: "Ich achte auf Details.", C4: "Ich richte ein Chaos an.", C5: "Ich erledige Aufgaben sofort.", C6: "Ich vergesse oft, Dinge an ihren richtigen Platz zurückzulegen.", C7: "Ich mag Ordnung.", C8: "Ich drücke mich vor meinen Pflichten.", C9: "Ich befolge einen Zeitplan.", C10: "Ich bin genau in meiner Arbeit.", E1: "Ich bin der Mittelpunkt der Party.", E2: "Ich rede nicht viel.", E3: "Ich fühle mich wohl unter Leuten.", E4: "Ich halte mich im Hintergrund.", E5: "Ich beginne Gespräche.", E6: "Ich habe wenig zu sagen.", E7: "Ich spreche auf Partys mit vielen verschiedenen Leuten.", E8: "Ich ziehe ungern Aufmerksamkeit auf mich.", E9: "Es macht mir nichts aus, im Mittelpunkt zu stehen.", E10: "Ich bin still bei Fremden.", A1: "Ich fühle mit den Gefühlen anderer mit.", A2: "Ich spüre die Emotionen anderer.", A3: "Ich sorge dafür, dass sich Leute wohlfühlen.", A4: "Ich interessiere mich nicht wirklich für andere.", A5: "Ich nehme mir Zeit für andere.", A6: "Ich bin freundlich und rücksichtsvoll.", A7: "Ich bin unhöflich zu Leuten.", A8: "Ich habe ein weiches Herz.", A9: "Die Probleme anderer Leute interessieren mich nicht.", A10: "Ich erkundige mich nach dem Wohlergehen anderer.", N1: "Ich gerate leicht in Stress.", N2: "Ich mache mir Sorgen um Dinge.", N3: "Ich bin leicht zu stören.", N4: "Ich rege mich leicht auf.", N5: "Meine Stimmung wechselt oft.", N6: "Ich habe häufige Stimmungsschwankungen.", N7: "Ich werde leicht gereizt.", N8: "Ich fühle mich oft niedergeschlagen.", N9: "Ich gerate leicht in Panik.", N10: "Ich bin die meiste Zeit entspannt." }
             }
@@ -668,7 +753,7 @@
         };
 
 
-        // DOM Elements (remains the same)
+        // DOM Elements
         const welcomeScreen = document.getElementById('welcome-screen');
         const questionScreen = document.getElementById('question-screen');
         const resultsScreen = document.getElementById('results-screen');
@@ -685,6 +770,10 @@
         const questionTextWrapper = document.getElementById('question-text-wrapper');
         const questionTextEl = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
+        
+        const homeBtn = document.getElementById('home-btn'); // New button
+        const homeText = document.getElementById('home-text'); // Span for home button text
+
         const backBtn = document.getElementById('back-btn');
         const nextBtn = document.getElementById('next-btn');
         const backText = document.getElementById('back-text');
@@ -711,12 +800,22 @@
             traitAgreeableness.textContent = t.traitAgreeableness;
             traitNeuroticism.textContent = t.traitNeuroticism;
             startBtn.textContent = t.startBtn;
-            backText.textContent = t.backText;
+            
+            // Question screen elements that need live update if screen is visible
+            if (backText) backText.textContent = t.backText;
+            if (homeText) homeText.textContent = t.homeText; // Set home button text
+
             resultsTitle.textContent = t.resultsTitle;
             restartBtn.textContent = t.restartBtn;
 
-            if (questionScreen.offsetParent !== null) loadQuestion(currentQuestion); 
-            if (resultsScreen.offsetParent !== null) displayResults();
+            // If on question screen, reload question text and options for new language
+            if (questionScreen.offsetParent !== null && !questionScreen.classList.contains('hidden')) {
+                 loadQuestion(currentQuestion); 
+            }
+            // If on results screen, re-display results for new language
+            if (resultsScreen.offsetParent !== null && !resultsScreen.classList.contains('hidden')) {
+                displayResults();
+            }
         }
 
         function scrollToTop() {
@@ -733,6 +832,30 @@
             scrollToTop();
             loadQuestion(currentQuestion);
         }
+
+        function goHome() {
+            questionScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+
+            // Reset test state
+            currentQuestion = 0;
+            answers = new Array(totalQuestions).fill(null);
+            results = {};
+            if (myResultsChart) {
+                myResultsChart.destroy();
+                myResultsChart = null;
+            }
+            
+            progressFill.style.width = '0%'; // Reset progress bar
+            // Ensure button states on question screen are reset if user goes back
+            if(backBtn) backBtn.disabled = true;
+            if(nextBtn) nextBtn.disabled = true;
+
+            scrollToTop();
+            setLanguage(currentLanguage); // Re-apply language to welcome screen
+        }
+
 
         function loadQuestion(index) {
             const t = translations[currentLanguage];
@@ -780,6 +903,8 @@
                 backBtn.disabled = index === 0;
                 nextBtn.disabled = answers[index] === null;
                 nextText.textContent = (index === totalQuestions - 1) ? t.finishText : t.nextText;
+                backText.textContent = t.backText; // Ensure back button text is set
+                homeText.textContent = t.homeText; // Ensure home button text is set
 
                 questionTextWrapper.style.opacity = 1;
                 optionsContainer.style.opacity = 1;
@@ -798,12 +923,10 @@
                 selectedRadio.closest('.option').classList.add('selected');
             }
             nextBtn.disabled = false;
-            
-            // Auto-next REMOVED from here
         }
 
         function nextQuestion() {
-            if (answers[currentQuestion] === null) return;
+            if (answers[currentQuestion] === null) return; // Should not happen if nextBtn is enabled correctly
 
             if (currentQuestion < totalQuestions - 1) {
                 currentQuestion++;
@@ -825,6 +948,7 @@
             const scoresByTrait = { O: [], C: [], E: [], A: [], N: [] };
             questions_data.forEach((q_info, index) => {
                 let score = answers[index];
+                if (score === null) score = 3; // Default to neutral if somehow null, though UI prevents this
                 if (q_info.reverse) score = 6 - score;
                 scoresByTrait[q_info.trait].push(score);
             });
@@ -842,6 +966,9 @@
             scrollToTop();
 
             const t = translations[currentLanguage];
+            resultsTitle.textContent = t.resultsTitle; // Ensure title is updated for current language
+            restartBtn.textContent = t.restartBtn; // Ensure button is updated
+
             const date = new Date().toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : currentLanguage, { 
                 year: 'numeric', month: 'long', day: 'numeric' 
             });
@@ -851,7 +978,7 @@
             const sortedTraits = ['O', 'C', 'E', 'A', 'N'];
 
             sortedTraits.forEach(traitKey => {
-                const score = results[traitKey];
+                const score = results[traitKey] || 0; // Default to 0 if result is undefined
                 let level = (score >= 4) ? 'high' : (score >= 2.6) ? 'medium' : 'low';
 
                 const traitResultDiv = document.createElement('div');
@@ -872,14 +999,18 @@
                 scoreEl.classList.add('trait-score');
                 scoreEl.textContent = score.toFixed(2);
                 scoreEl.style.color = chartTraitBorderColors[traitKey];
-                scoreEl.style.background = chartTraitColors[traitKey].replace('0.7', '0.25'); // Slightly more visible bg
+                scoreEl.style.background = chartTraitColors[traitKey].replace('0.7', '0.25'); 
 
                 header.appendChild(nameEl);
                 header.appendChild(scoreEl);
                 
                 const descEl = document.createElement('div');
                 descEl.classList.add('trait-description');
-                descEl.textContent = t.descriptions[traitKey][level];
+                // Ensure description exists for the level and trait
+                const descriptionText = t.descriptions[traitKey] && t.descriptions[traitKey][level] 
+                                       ? t.descriptions[traitKey][level] 
+                                       : "Description not available.";
+                descEl.textContent = descriptionText;
                 
                 traitResultDiv.appendChild(header);
                 traitResultDiv.appendChild(descEl);
@@ -889,7 +1020,7 @@
             const ctx = document.getElementById('results-chart').getContext('2d');
             if (myResultsChart) myResultsChart.destroy();
             
-            const chartDataValues = sortedTraits.map(traitKey => results[traitKey]);
+            const chartDataValues = sortedTraits.map(traitKey => results[traitKey] || 0);
             const chartLabels = sortedTraits.map(traitKey => t.traitNames[traitKey]);
             const chartBackgroundColors = sortedTraits.map(traitKey => chartTraitColors[traitKey]);
             const chartBorderColors = sortedTraits.map(traitKey => chartTraitBorderColors[traitKey]);
@@ -897,16 +1028,20 @@
             let barThickness = 30;
             let tickFontSize = 12;
             let yTickFontSize = 13;
+            let xGridDisplay = true;
+            let yGridDisplay = false;
+
 
             if (window.innerWidth < 768) {
                 barThickness = 25;
                 tickFontSize = 10;
                 yTickFontSize = 11;
             }
-             if (window.innerWidth < 480) {
-                barThickness = 20;
-                tickFontSize = 9;
-                yTickFontSize = 10;
+            if (window.innerWidth < 480) {
+                barThickness = 18; // Adjusted
+                tickFontSize = 8;  // Adjusted
+                yTickFontSize = 9; // Adjusted
+                xGridDisplay = true; // Keep x grid for readability on small screens
             }
 
 
@@ -918,7 +1053,7 @@
                         data: chartDataValues,
                         backgroundColor: chartBackgroundColors,
                         borderColor: chartBorderColors,
-                        borderWidth: 1.5, // Slightly thinner border
+                        borderWidth: 1.5, 
                         borderRadius: 6, 
                         barThickness: barThickness, 
                     }]
@@ -931,11 +1066,11 @@
                         x: { 
                             beginAtZero: true, max: 5,
                             ticks: { color: 'rgba(224, 224, 224, 0.8)', font: { size: tickFontSize, weight: '500'} },
-                            grid: { color: 'rgba(255,255,255,0.08)' } 
+                            grid: { color: 'rgba(255,255,255,0.08)', display: xGridDisplay } 
                         },
                         y: { 
                             ticks: { color: 'rgba(224, 224, 224, 0.9)', font: { size: yTickFontSize, weight: '600'} },
-                            grid: { display: false }
+                            grid: { display: yGridDisplay }
                         }
                     },
                     plugins: {
@@ -964,25 +1099,30 @@
                 myResultsChart.destroy();
                 myResultsChart = null;
             }
+            
+            // Reset similar to goHome but specifically for restart logic
+            currentQuestion = 0;
+            answers = new Array(totalQuestions).fill(null);
+            results = {};
+            progressFill.style.width = '0%';
+            if(backBtn) backBtn.disabled = true;
+            if(nextBtn) nextBtn.disabled = true;
+
             scrollToTop();
-            setLanguage(currentLanguage);
+            setLanguage(currentLanguage); // Re-apply language to welcome screen
         }
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            setLanguage(currentLanguage);
-             // Add resize listener for chart adjustments if necessary,
-            // though Chart.js responsive usually handles it.
-            // If more fine-grained control is needed on resize for font/bar thickness:
-            // window.addEventListener('resize', () => {
-            //     if (myResultsChart && resultsScreen.offsetParent !== null) {
-            //         // Potentially re-calculate barThickness/tickFontSize and update chart
-            //         // myResultsChart.options.datasets[0].barThickness = newBarThickness;
-            //         // myResultsChart.options.scales.x.ticks.font.size = newTickFontSize;
-            //         // myResultsChart.update();
-            //         // For simplicity, we rely on initial check and Chart.js responsiveness
-            //     }
-            // });
+            setLanguage(currentLanguage); // Initial language setup
+             
+            window.addEventListener('resize', () => {
+                 if (myResultsChart && resultsScreen.offsetParent !== null && !resultsScreen.classList.contains('hidden')) {
+                     // Re-display results which will re-evaluate chart options based on new window.innerWidth
+                     // This helps if user resizes browser while results are shown
+                     displayResults(); 
+                 }
+            });
         });
 
     </script>
